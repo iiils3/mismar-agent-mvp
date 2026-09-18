@@ -48,7 +48,7 @@ def run_company(payload:CouncilRequest):
             if os.getenv("MISMAR_WORKER_URL"):
                 emit({"type":"system","stage":"المبرمج","message":"الرئيس سلّم القرار إلى محطة البرمجة. المبرمج سيعدل فرعاً منفصلاً ويشغل الفحوصات."})
                 import urllib.request
-                req=urllib.request.Request(os.getenv("MISMAR_WORKER_URL").rstrip("/")+"/build",data=json.dumps({"task":payload.request,"mode":payload.mode}).encode(),headers={"Content-Type":"application/json","Authorization":f"Bearer {os.getenv("MISMAR_WORKER_SHARED_SECRET","")}"},method="POST")
+                req=urllib.request.Request(os.getenv("MISMAR_WORKER_URL").rstrip("/")+"/build",data=json.dumps({"task":payload.request,"mode":payload.mode}).encode(),headers={"Content-Type":"application/json","Authorization":"Bearer "+os.getenv("MISMAR_WORKER_SHARED_SECRET","")},method="POST")
                 try:
                     with urllib.request.urlopen(req,timeout=1200) as response: worker_result=json.loads(response.read().decode())
                     emit({"type":"github","message":"المبرمج أنهى التسليم إلى GitHub","detail":worker_result.get("pr_url") or worker_result.get("summary","تم التنفيذ"),"pr_url":worker_result.get("pr_url"),"branch":worker_result.get("branch")})

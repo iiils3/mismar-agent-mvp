@@ -1,10 +1,10 @@
 from __future__ import annotations
 import base64,json,os,re,shutil,subprocess,tempfile,urllib.error,urllib.request
-from fastapi import FastAPI,HTTPException
+from fastapi import FastAPI,HTTPException,Header
 from pydantic import BaseModel,Field
 app=FastAPI(title="Mismar Coding Worker")
 class BuildRequest(BaseModel):
-    task:str=Field(min_length=1,max_length=12000); repo:str|None=None; base:str="main"; branch:str|None=None; builder:str|None=None
+    task:str=Field(min_length=1,max_length=12000); repo:str|None=None; base:str|None=None; branch:str|None=None; builder:str|None=None
 def github_api(path,token,method="GET",body=None):
     data=json.dumps(body).encode() if body is not None else None
     req=urllib.request.Request("https://api.github.com"+path,data=data,method=method,headers={"Authorization":f"Bearer {token}","Accept":"application/vnd.github+json","Content-Type":"application/json","X-GitHub-Api-Version":"2022-11-28"})
@@ -24,12 +24,14 @@ def clone(repo,base,token,path):
 @app.get("/health")
 def health():return {"ok":True,"service":"mismar-coding-worker","github":bool(os.getenv("GITHUB_TOKEN"))}
 @app.post("/build")
-def build(req:BuildRequest):
+def build(req:BuildRequest, authorization: str | None = Header(default=None)):
+    secret=os.getenv("MISMAR_WORKER_SHARED_SECRET","").strip()
+    if not secret or authorization != "Bearer "+secret: raise HTTPException(401,"Unauthorized")
     token=os.getenv("GITHUB_TOKEN"); repo=req.repo or os.getenv("GITHUB_REPO")
     if not token or not repo: raise HTTPException(503,"Worker يحتاج GITHUB_TOKEN و GITHUB_REPO")
-    branch=req.branch or safe_branch(req.task); root=tempfile.mkdtemp(prefix="mismar-worker-")
+    base=req.base or os.getenv("MISMAR_WORK_BASE","main"); branch=req.branch or safe_branch(req.task); root=tempfile.mkdtemp(prefix="mismar-worker-")
     try:
-        env=clone(repo,req.base,token,root); run(["git","checkout","-b",branch],root,env)
+        env=clone(repo,base,token,root); run(["git","checkout","-b",branch],root,env)
         from builders.registry import select_builder
         builder=select_builder(req.builder)
         if not builder: raise RuntimeError("لا يوجد coding builder متوفر في Worker")
