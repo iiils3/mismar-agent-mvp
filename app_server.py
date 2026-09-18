@@ -45,7 +45,17 @@ def run_company(payload:CouncilRequest):
             try: parsed=json.loads(decision); summary=parsed.get("decision",decision)
             except json.JSONDecodeError: summary=decision
             emit({"type":"system","stage":"القرار","message":"تم تجميع القرار التنفيذي.","summary":summary,"done":True})
-            emit({"type":"github","message":"مرحلة GitHub جاهزة للربط","detail":"محطة البرمجة يجب أن تكون Worker ببيئة Git ثابتة حتى يكتب المبرمج ويشغل CI ويفتح PR بدون دمج تلقائي."})
+            if os.getenv("MISMAR_WORKER_URL"):
+                emit({"type":"system","stage":"المبرمج","message":"الرئيس سلّم القرار إلى محطة البرمجة. المبرمج سيعدل فرعاً منفصلاً ويشغل الفحوصات."})
+                import urllib.request
+                req=urllib.request.Request(os.getenv("MISMAR_WORKER_URL").rstrip("/")+"/build",data=json.dumps({"task":payload.request,"mode":payload.mode}).encode(),headers={"Content-Type":"application/json"},method="POST")
+                try:
+                    with urllib.request.urlopen(req,timeout=1200) as response: worker_result=json.loads(response.read().decode())
+                    emit({"type":"github","message":"المبرمج أنهى التسليم إلى GitHub","detail":worker_result.get("pr_url") or worker_result.get("summary","تم التنفيذ"),"pr_url":worker_result.get("pr_url"),"branch":worker_result.get("branch")})
+                except Exception as worker_exc:
+                    emit({"type":"error","stage":"المبرمج / GitHub","message":f"فشل Worker: {type(worker_exc).__name__}"})
+            else:
+                emit({"type":"github","message":"مرحلة GitHub جاهزة للربط","detail":"نحتاج Worker مستقل ببيئة Git ثابتة حتى يكتب المبرمج ويشغل CI ويفتح PR بدون دمج تلقائي."})
             emit({"type":"done","message":"اكتملت غرفة العمليات."})
         except Exception as exc:
             print(f"Mismar run error: {type(exc).__name__}: {exc}",flush=True); q.put({"type":"error","stage":"خطأ","message":f"تعذر إكمال المهمة: {type(exc).__name__}"})
