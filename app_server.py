@@ -7,8 +7,6 @@ from fastapi import FastAPI
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 
-from core.council import debate
-from core.synthesis import synthesize
 
 ROOT = Path(__file__).resolve().parent
 app = FastAPI(title="Mismar AI Office")
@@ -36,19 +34,26 @@ def health():
 
 @app.post("/api/council")
 def council(payload: CouncilRequest):
-    modes = {"fast": (3, 1), "balanced": (6, 2), "full": (13, 2), "deep": (13, 3)}
-    _, rounds = modes.get(payload.mode, modes["balanced"])
-    result = debate(
-        payload.request,
-        payload.mode if payload.mode in ("full", "deep") else "auto",
-        rounds,
-    )
-    decision = synthesize(payload.request, result)
     try:
-        decision_json = json.loads(decision)
-    except json.JSONDecodeError:
-        decision_json = {"decision": decision}
-    return {"roles": result["roles"], "rounds": result["rounds"], "attachments": [a.model_dump() for a in payload.attachments], **decision_json}
+        from core.council import debate
+        from core.synthesis import synthesize
+
+        modes = {"fast": (3, 1), "balanced": (6, 2), "full": (13, 2), "deep": (13, 3)}
+        _, rounds = modes.get(payload.mode, modes["balanced"])
+        result = debate(
+            payload.request,
+            payload.mode if payload.mode in ("full", "deep") else "auto",
+            rounds,
+        )
+        decision = synthesize(payload.request, result)
+        try:
+            decision_json = json.loads(decision)
+        except json.JSONDecodeError:
+            decision_json = {"decision": decision}
+        return {"roles": result["roles"], "rounds": result["rounds"], "attachments": [a.model_dump() for a in payload.attachments], **decision_json}
+    except Exception as exc:
+        from fastapi import HTTPException
+        raise HTTPException(status_code=503, detail=f"AI engine unavailable: {type(exc).__name__}: {exc}")
 
 @app.post("/api/upload")
 def upload_metadata(payload: list[Attachment]):
