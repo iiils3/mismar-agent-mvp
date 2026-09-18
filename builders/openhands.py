@@ -1,8 +1,11 @@
-import os, shutil, subprocess
+import os
+import shutil
+import subprocess
 from .base import BuildRequest, BuildResult, changed_files, worktree_ok
 
 class OpenHandsBuilder:
     name = "openhands"
+
     def available(self) -> bool:
         return shutil.which("openhands") is not None
 
@@ -20,14 +23,17 @@ class OpenHandsBuilder:
         )
         p = subprocess.run(
             ["openhands", "--headless", "--override-with-envs", "-t", prompt],
-            cwd=request.repo_path, text=True, capture_output=True,
-            timeout=1800, check=False, env=env
+            cwd=request.repo_path,
+            text=True,
+            capture_output=True,
+            timeout=1800,
+            check=False,
+            env=env,
         )
         files = changed_files(request.repo_path)
         return BuildResult(
             p.returncode == 0,
             "تم تشغيل OpenHands." if p.returncode == 0 else "OpenHands فشل.",
             files,
-            (p.stdout + "
-" + p.stderr)[-12000:]
+            (p.stdout + "\n" + p.stderr)[-12000:],
         )
