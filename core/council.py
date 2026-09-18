@@ -12,7 +12,8 @@ from litellm import completion
 
 load_dotenv()
 ROOT = Path(__file__).resolve().parents[1]
-CACHE = ROOT / os.getenv("MISMAR_CACHE_DIR", ".cache/llm")
+DEFAULT_CACHE = "/tmp/mismar-cache/llm" if os.getenv("VERCEL") else str(ROOT / ".cache/llm")
+CACHE = Path(os.getenv("MISMAR_CACHE_DIR", DEFAULT_CACHE))
 CACHE.mkdir(parents=True, exist_ok=True)
 
 ROLES = {
