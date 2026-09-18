@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0b0b0d">
+  <link rel="manifest" href="/manifest.json">
+  <title>Mismar AI Office</title>
+  <style>
+    :root{font-family:system-ui,sans-serif;color-scheme:dark;background:#0b0b0d;color:#f4f4f5}
+    body{margin:0;background:#0b0b0d}main{max-width:900px;margin:auto;padding:24px}
+    textarea,select,button{width:100%;box-sizing:border-box;border:1px solid #303038;background:#15151a;color:#fff;border-radius:14px;padding:14px;font:inherit}
+    textarea{min-height:180px;resize:vertical}button{cursor:pointer;background:#f4f4f5;color:#09090b;font-weight:700}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+    pre{white-space:pre-wrap;background:#121218;border:1px solid #292932;border-radius:14px;padding:16px;line-height:1.6}
+    .muted{color:#9ca3af}.pill{display:inline-block;padding:6px 10px;border-radius:99px;background:#1c1c24;margin:3px}
+    @media(max-width:600px){main{padding:16px}.grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<main>
+  <h1>مكتب مسمار AI</h1>
+  <p class="muted">مجلس موظفين متعدد الوكلاء — نقاش، اعتراض، قرار، ثم تنفيذ.</p>
+  <textarea id="idea" placeholder="اكتب فكرتك أو المشكلة..."></textarea>
+  <div class="grid">
+    <select id="mode">
+      <option value="fast">سريع — أقل استهلاك</option>
+      <option value="balanced" selected>متوازن</option>
+      <option value="full">فريق كامل — 13 وكيل</option>
+      <option value="deep">فريق كامل + نقاش أعمق</option>
+    </select>
+    <button id="run">ابدأ اجتماع الموظفين</button>
+  </div>
+  <div id="roles"></div>
+  <pre id="out">بانتظار المهمة...</pre>
+</main>
+<script>
+const idea=document.querySelector('#idea'), mode=document.querySelector('#mode'), out=document.querySelector('#out');
+document.querySelector('#run').onclick=async()=>{
+  if(!idea.value.trim()) return;
+  out.textContent='جاري الاجتماع...';
+  try{
+    const r=await fetch('/api/council',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({request:idea.value,mode:mode.value})});
+    const d=await r.json();
+    document.querySelector('#roles').innerHTML=(d.roles||[]).map(x=>'<span class="pill">'+x+'</span>').join('');
+    out.textContent=d.decision || JSON.stringify(d,null,2);
+  }catch(e){out.textContent='تعذر الاتصال بالخادم: '+e.message}
+};
+</script>
+</body>
+</html>

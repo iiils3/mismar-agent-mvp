@@ -1,0 +1,23 @@
+{
+  "roles": [
+    "idea",
+    "market",
+    "strategy",
+    "architect",
+    "ux",
+    "backend",
+    "frontend",
+    "devops",
+    "qa",
+    "security",
+    "content",
+    "growth",
+    "data"
+  ],
+  "modes": {
+    "fast": {"max_roles": 3, "rounds": 1},
+    "balanced": {"max_roles": 6, "rounds": 2},
+    "full": {"max_roles": 13, "rounds": 2},
+    "deep": {"max_roles": 13, "rounds": 3}
+  }
+}

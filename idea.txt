@@ -1,4 +1,0 @@
-# Put one project idea here.
-
-Example:
-Build a minimal Arabic landing page for ScholarMCP with a value proposition and a login button.
