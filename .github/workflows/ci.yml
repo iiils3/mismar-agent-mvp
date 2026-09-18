@@ -19,7 +19,7 @@ jobs:
       - name: Compile Python
         run: python -m compileall -q .
       - name: Import smoke test
-        run: python -c "import core.council, core.synthesis, api"
+        run: python -c "import app_server, api.index, core.council, core.synthesis, core.mcp_client"
       - name: No accidental secrets
         run: |
           ! grep -RInE '(sk-[A-Za-z0-9]{20,}|AIza[A-Za-z0-9_-]{20,}|ghp_[A-Za-z0-9]{20,})' . --exclude-dir=.git --exclude='*.md'
