@@ -1,50 +1,49 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#0b0b0d">
-  <link rel="manifest" href="/manifest.json">
-  <title>Mismar AI Office</title>
-  <style>
-    :root{font-family:system-ui,sans-serif;color-scheme:dark;background:#0b0b0d;color:#f4f4f5}
-    body{margin:0;background:#0b0b0d}main{max-width:900px;margin:auto;padding:24px}
-    textarea,select,button{width:100%;box-sizing:border-box;border:1px solid #303038;background:#15151a;color:#fff;border-radius:14px;padding:14px;font:inherit}
-    textarea{min-height:180px;resize:vertical}button{cursor:pointer;background:#f4f4f5;color:#09090b;font-weight:700}
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
-    pre{white-space:pre-wrap;background:#121218;border:1px solid #292932;border-radius:14px;padding:16px;line-height:1.6}
-    .muted{color:#9ca3af}.pill{display:inline-block;padding:6px 10px;border-radius:99px;background:#1c1c24;margin:3px}
-    @media(max-width:600px){main{padding:16px}.grid{grid-template-columns:1fr}}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0f1020">
+<link rel="manifest" href="/manifest.json">
+<title>مكتب مسمار AI</title>
+<style>
+:root{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#f8fafc;background:#090a12;color-scheme:dark;--panel:#111425;--line:#262b45;--muted:#98a2bd;--a:#7c5cff;--b:#22d3ee;--good:#34d399}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at 10% 0%,#211b48 0,#090a12 38%),radial-gradient(circle at 100% 20%,#073744 0,#090a12 30%)}main{width:min(980px,100%);margin:auto;padding:22px 16px 50px}.top{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:18px}.brand{display:flex;align-items:center;gap:11px}.logo{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,var(--a),var(--b));display:grid;place-items:center;font-weight:900;box-shadow:0 8px 30px #0008}.sub{color:var(--muted);font-size:13px}.panel{background:#111425dd;border:1px solid var(--line);backdrop-filter:blur(14px);border-radius:22px;padding:16px;box-shadow:0 18px 50px #0005}.label{font-size:13px;color:#b7bfd5;margin:0 0 8px}.editor{position:relative}.counter{position:absolute;left:12px;bottom:10px;color:#8290b2;font-size:12px}.counter.limit{color:#fbbf24}textarea,select,button{font:inherit;color:#f8fafc;border-radius:15px;border:1px solid var(--line);background:#0d1020}textarea{width:100%;min-height:230px;resize:vertical;padding:16px 16px 35px;outline:none;line-height:1.75}textarea:focus{border-color:#6d5ce7;box-shadow:0 0 0 3px #7c5cff22}.grid{display:grid;grid-template-columns:1fr auto;gap:10px;margin-top:12px}select,button{padding:13px 15px}button{cursor:pointer;border:0;background:linear-gradient(135deg,var(--a),#5d7cff);font-weight:800;min-width:180px;box-shadow:0 10px 25px #5b4bd044}button:disabled{opacity:.5;cursor:wait}.upload{display:flex;gap:10px;align-items:center;margin-top:12px;flex-wrap:wrap}.upload input{display:none}.upload label{cursor:pointer;padding:10px 13px;border:1px dashed #465071;border-radius:13px;color:#c8d0e5}.files{display:flex;gap:8px;flex-wrap:wrap}.file{display:flex;align-items:center;gap:7px;background:#0b0e1b;border:1px solid #252b43;border-radius:12px;padding:6px 9px;font-size:12px}.file button{min-width:auto;padding:2px 7px;background:#252b43;box-shadow:none}.roles{display:flex;gap:7px;flex-wrap:wrap;margin-top:15px}.pill{padding:7px 10px;border-radius:99px;background:#171b31;border:1px solid #2b3150;color:#cbd5e1;font-size:12px}.status{margin-top:15px;color:#aeb8d2;font-size:13px}.result{margin-top:15px;white-space:pre-wrap;line-height:1.8;background:#0b0e1b;border:1px solid #222943;border-radius:16px;padding:16px}.hint{font-size:12px;color:#7783a4;margin-top:9px}@media(max-width:650px){.grid{grid-template-columns:1fr}.grid button{width:100%}.top{align-items:flex-start}.panel{border-radius:18px}}
+</style>
 </head>
 <body>
 <main>
-  <h1>مكتب مسمار AI</h1>
-  <p class="muted">مجلس موظفين متعدد الوكلاء — نقاش، اعتراض، قرار، ثم تنفيذ.</p>
-  <textarea id="idea" placeholder="اكتب فكرتك أو المشكلة..."></textarea>
-  <div class="grid">
-    <select id="mode">
-      <option value="fast">سريع — أقل استهلاك</option>
-      <option value="balanced" selected>متوازن</option>
-      <option value="full">فريق كامل — 13 وكيل</option>
-      <option value="deep">فريق كامل + نقاش أعمق</option>
-    </select>
-    <button id="run">ابدأ اجتماع الموظفين</button>
-  </div>
-  <div id="roles"></div>
-  <pre id="out">بانتظار المهمة...</pre>
+<div class="top"><div class="brand"><div class="logo">م</div><div><strong>مكتب مسمار AI</strong><div class="sub">مجلس الموظفين — فكرة ← نقاش ← قرار</div></div></div><span class="pill">نسخة تجريبية</span></div>
+<section class="panel">
+<p class="label">شنو تريد من الفريق؟</p>
+<div class="editor"><textarea id="idea" maxlength="5000" placeholder="اكتب فكرتك كاملة هنا... حتى 5000 حرف. لا تختصر الفكرة."></textarea><span id="counter" class="counter">0 / 5000</span></div>
+<div class="upload"><label for="media">＋ رفع صور / فيديو</label><input id="media" type="file" accept="image/*,video/*" multiple><div id="files" class="files"></div></div>
+<div class="grid"><select id="mode"><option value="fast">سريع — 3 موظفين</option><option value="balanced" selected>متوازن — 6 موظفين</option><option value="full">كامل — 13 موظف</option><option value="deep">عميق — 13 موظف + جولة إضافية</option></select><button id="run">ابدأ اجتماع الموظفين</button></div>
+<div class="hint">النص لا ينقطع عند 5000 حرف. الملفات تُقبل حتى 20MB للملف في النسخة التجريبية.</div>
+</section>
+<div id="roles" class="roles"></div><div id="status" class="status">بانتظار المهمة...</div><div id="out" class="result">القرار النهائي سيظهر هنا.</div>
 </main>
 <script>
-const idea=document.querySelector('#idea'), mode=document.querySelector('#mode'), out=document.querySelector('#out');
-document.querySelector('#run').onclick=async()=>{
-  if(!idea.value.trim()) return;
-  out.textContent='جاري الاجتماع...';
+const idea=document.querySelector("#idea"),counter=document.querySelector("#counter"),media=document.querySelector("#media"),filesBox=document.querySelector("#files"),run=document.querySelector("#run"),status=document.querySelector("#status"),out=document.querySelector("#out"),rolesBox=document.querySelector("#roles");
+let attachments=[];
+idea.addEventListener("input",()=>{counter.textContent=idea.value.length+" / 5000";counter.classList.toggle("limit",idea.value.length>=4900)});
+media.addEventListener("change",()=>{
+  attachments=[...media.files].slice(0,10).filter(f=>f.size<=20*1024*1024);
+  filesBox.innerHTML=attachments.map((f,i)=>'<span class="file">'+(f.type.startsWith("video/")?"🎬":"🖼️")+" "+escapeHtml(f.name)+' <button type="button" data-i="'+i+'">×</button></span>').join("");
+  filesBox.querySelectorAll("button").forEach(b=>b.onclick=()=>{attachments.splice(Number(b.dataset.i),1);renderFiles()});
+});
+function renderFiles(){filesBox.innerHTML=attachments.map((f,i)=>'<span class="file">'+(f.type.startsWith("video/")?"🎬":"🖼️")+" "+escapeHtml(f.name)+' <button type="button" data-i="'+i+'">×</button></span>').join("");filesBox.querySelectorAll("button").forEach(b=>b.onclick=()=>{attachments.splice(Number(b.dataset.i),1);renderFiles()})}
+function escapeHtml(s){return s.replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+run.onclick=async()=>{
+  const text=idea.value.trim(); if(!text){status.textContent="اكتب المهمة أولاً.";return}
+  run.disabled=true;status.textContent="جاري تشغيل الفريق...";out.textContent="الاجتماع بدأ. انتظر القرار النهائي.";rolesBox.innerHTML="";
   try{
-    const r=await fetch('/api/council',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({request:idea.value,mode:mode.value})});
-    const d=await r.json();
-    document.querySelector('#roles').innerHTML=(d.roles||[]).map(x=>'<span class="pill">'+x+'</span>').join('');
-    out.textContent=d.decision || JSON.stringify(d,null,2);
-  }catch(e){out.textContent='تعذر الاتصال بالخادم: '+e.message}
+    const d=await fetch("/api/council",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({request:text,mode:document.querySelector("#mode").value,attachments:attachments.map(f=>({name:f.name,type:f.type,size:f.size}))})}).then(async r=>{const x=await r.json();if(!r.ok)throw new Error(x.detail||"فشل الطلب");return x});
+    rolesBox.innerHTML=(d.roles||[]).map(x=>'<span class="pill">✓ '+escapeHtml(x)+"</span>").join("");
+    status.textContent="اكتمل الاجتماع — "+(d.roles||[]).length+" موظف";
+    out.textContent=(d.decision||"")+(d.why?"\n\nليش:\n• "+d.why.join("\n• "):"")+(d.actions?"\n\nالخطوات:\n• "+d.actions.join("\n• "):"")+(d.risks?"\n\nالمخاطر:\n• "+d.risks.join("\n• "):"");
+  }catch(e){status.textContent="صار خطأ";out.textContent="تعذر تشغيل الاجتماع: "+e.message}
+  finally{run.disabled=false}
 };
 </script>
 </body>
